@@ -6,8 +6,9 @@
  * This service abstracts the backend calls to make it easy to switch/mock
  */
 
-const WORKER_URL = 'https://shiny-surf-110c.tkexchange.workers.dev';
-const IS_DEV = false; // Set to true for local development with mocks
+// Use environment variable for worker URL, with fallback for development
+const WORKER_URL = process.env.REACT_APP_WORKER_URL || 'https://shiny-surf-110c.tkexchange.workers.dev';
+const IS_DEV = process.env.NODE_ENV === 'development' && !process.env.REACT_APP_WORKER_URL;
 
 /**
  * Get Telegram WebApp instance
