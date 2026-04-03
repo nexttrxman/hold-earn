@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useWallet } from '@/contexts/WalletContext';
 import { useTelegram } from '@/hooks/useTelegram';
 
-// Tether icon URL - using data URI for reliability
-const TETHER_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMzkuNDMgMjk1LjI3Ij48cGF0aCBmaWxsPSIjNTBBRjk1IiBkPSJNNjIuMTUgMS40NWwtNjIuMTUgMTE4LjIgNzIuMDMgNDAuNTRoMTk1LjI4bDcyLjA0LTQwLjU0TDI3Ny4xOSAxLjQ1SDYyLjE1eiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0xOTEuMTkgMTQ0LjhjLTMuMTkuMjctMTkuNzYgMS40Ny0yMS41NSAxLjQ3cy0xOC4zNi0xLjItMjEuNTUtMS40N2MtNDIuNTEtMy41NS03NC40Ny0xNC45OS03NC40Ny0yOC43NXMzMS45Ni0yNS4yIDc0LjQ3LTI4Ljc1djQ1Ljc1YzMuMjMuMjMgMTguNTMgMS40NSAyMS42OCAxLjQ1czE4LjIzLTEuMjggMjEuNDItMS40NXYtNDUuNzVjNDIuNDYgMy41NSA3NC4zOCAxNS4wMiA3NC4zOCAyOC43NXMtMzEuOTIgMjUuMi03NC4zOCAyOC43NXptMC02MS41OHYtNDAuNTRoNTcuNzl2LTI4LjQ5aC0xNTguNnYyOC40OWg1Ny43OXY0MC41NGMtNDguMjUgNC4yLTg0LjQ5IDE4Ljg2LTg0LjQ5IDM2LjMyczM2LjI0IDMyLjEyIDg0LjQ5IDM2LjMydjExNS40Nmg0My4wMnYtMTE1LjQ2YzQ4LjE4LTQuMiA4NC4zNS0xOC44NSA4NC4zNS0zNi4zMnMtMzYuMTctMzIuMTItODQuMzUtMzYuMzJ6Ii8+PC9zdmc+';
+// Tether icon URL - custom image
+const TETHER_ICON = 'https://customer-assets.emergentagent.com/job_crypto-clean-1/artifacts/k3psq3zb_tether.png';
 
 export function HoldButton() {
   const { 
@@ -226,44 +226,49 @@ export function HoldButton() {
         <motion.button
           data-testid="hold-button"
           className={`
-            relative w-40 h-40 rounded-full
-            bg-gradient-to-b from-[#1a1a1f] to-[#0a0a0c]
-            border border-white/10
+            relative w-44 h-44 rounded-full
             flex flex-col items-center justify-center
             select-none cursor-pointer
             transition-shadow duration-300
+            overflow-hidden
             ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
-            ${isHolding ? 'shadow-[0_0_40px_rgba(0,230,118,0.2)]' : 'shadow-[0_0_20px_rgba(0,0,0,0.5)]'}
+            ${isHolding ? 'shadow-[0_0_60px_rgba(0,230,118,0.3)]' : ''}
           `}
           onMouseDown={!isDisabled ? startHold : undefined}
           onMouseUp={stopHold}
           onMouseLeave={stopHold}
           onTouchStart={!isDisabled ? startHold : undefined}
           onTouchEnd={stopHold}
-          whileTap={!isDisabled ? { scale: 0.95 } : {}}
+          whileTap={!isDisabled ? { scale: 0.92 } : {}}
           disabled={isDisabled}
         >
-          {/* Tether Icon */}
+          {/* Tether Button Image */}
           <img 
             src={TETHER_ICON} 
-            alt="USDT"
-            className="w-14 h-14 mb-2 pointer-events-none"
+            alt="Hold to Earn"
+            className="w-full h-full object-cover pointer-events-none"
             draggable={false}
           />
           
-          {/* Status Text */}
-          <span className={`
-            text-sm font-medium
-            ${status === 'done' ? 'text-brand-green' : 'text-white/60'}
-            ${status === 'wait' ? 'text-brand-red' : ''}
-          `}>
-            {status === 'hold' && 'Hold'}
-            {status === 'holding' && `${status}`}
-            {status === 'done' && 'Done!'}
-            {status === 'wait' && 'Wait'}
-            {status !== 'hold' && status !== 'holding' && status !== 'done' && status !== 'wait' && status}
-          </span>
         </motion.button>
+
+        {/* Status indicator below button */}
+        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2">
+          <span className={`
+            text-sm font-semibold px-4 py-1 rounded-full
+            ${status === 'done' ? 'bg-brand-green/20 text-brand-green' : ''}
+            ${status === 'wait' ? 'bg-brand-red/20 text-brand-red' : ''}
+            ${status === 'hold' ? 'text-white/50' : ''}
+            ${status === 'holding' ? 'text-white/70' : ''}
+            ${status !== 'hold' && status !== 'holding' && status !== 'done' && status !== 'wait' ? 'text-white/70' : ''}
+          `}>
+            {status === 'hold' && 'Hold to earn'}
+            {status === 'holding' && `${status}...`}
+            {status === 'done' && '✓ Done!'}
+            {status === 'wait' && 'Wait...'}
+            {status !== 'hold' && status !== 'holding' && status !== 'done' && status !== 'wait' && `${status}s left`}
+          </span>
+        </div>
 
         {/* Prize Animation */}
         <AnimatePresence>
